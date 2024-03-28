@@ -22,12 +22,12 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<DebugType>embedded</DebugType>
-		<NoWarn>1701;1702;IDE1006</NoWarn>
+		<NoWarn>1701,1702,IDE1006,IDE0042,CA1829,CA2211,CS8629,CS8602</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<DebugType>embedded</DebugType>
-		<NoWarn>1701;1702;IDE1006</NoWarn>
+		<NoWarn>1701,1702,IDE1006,IDE0042,CA1829,CA2211,CS8629,CS8602</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -38,7 +38,7 @@
 		<PackageReference Include="LibUsbDotNet" Version="2.2.29" />
 		<PackageReference Include="NLog" Version="5.1.4" />
 		<PackageReference Include="Octokit" Version="9.0.0" />
-		<PackageReference Include="PKHeX.Core" Version="24.3.10" />
+		<PackageReference Include="PKHeX.Core" Version="24.3.26" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -64,7 +64,7 @@
 			<HintPath>Resources\deps\PKHeX.Drawing.PokeSprite.dll</HintPath>
 		</Reference>
 		<Reference Include="SysBot.Base">
-			<HintPath>..\TeraFinder.Core\deps\SysBot.Base.dll</HintPath>
+			<HintPath>..\TeraFinder.RemoteExecutor\deps\SysBot.Base.dll</HintPath>
 		</Reference>
 		<Reference Include="pkNX.Structures">
 			<HintPath>..\TeraFinder.Core\deps\pkNX.Structures.dll</HintPath>
@@ -111,6 +111,7 @@
 			<Private>True</Private>
 			<CopyLocalSatelliteAssemblies>True</CopyLocalSatelliteAssemblies>
 		</ProjectReference>
+		<ProjectReference Include="..\TeraFinder.RemoteExecutor\TeraFinder.RemoteExecutor.csproj" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows_NT'">

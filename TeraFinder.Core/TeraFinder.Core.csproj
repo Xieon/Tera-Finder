@@ -17,14 +17,18 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<DebugType>embedded</DebugType>
-		<NoWarn>1701;1702;CA2211</NoWarn>
+		<NoWarn>1701,1702,CA2211,CS8604,CS8629,CS8602</NoWarn>
 		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<DebugType>embedded</DebugType>
-		<NoWarn>1701;1702;CA2211</NoWarn>
+		<NoWarn>1701,1702,CA2211,CS8604,CS8629,CS8602</NoWarn>
 		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DefineConstants>$(DefineConstants);USE_PKHEX_MASTER</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -36,13 +40,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="FlatSharp.Runtime" Version="7.4.0" />
-		<PackageReference Include="PKHeX.Core" Version="24.3.10" />
+		<PackageReference Include="PKHeX.Core" Version="24.3.26" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="SysBot.Base">
-			<HintPath>deps\SysBot.Base.dll</HintPath>
-		</Reference>
 		<Reference Include="pkNX.Structures">
 			<HintPath>deps\pkNX.Structures.dll</HintPath>
 		</Reference>
