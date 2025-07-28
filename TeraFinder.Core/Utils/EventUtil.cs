@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using PKHeX.Core;
@@ -37,8 +36,8 @@ public static class EventUtil
         {
             var KBCATFixedRewardItemArray = sav.Accessor.FindOrDefault(BlockDefinitions.KBCATFixedRewardItemArray.Key).Data;
             var KBCATLotteryRewardItemArray = sav.Accessor.FindOrDefault(BlockDefinitions.KBCATLotteryRewardItemArray.Key).Data;
-            var tableDrops = pkNX.Structures.FlatBuffers.FlatBufferConverter.DeserializeFrom<DeliveryRaidFixedRewardItemArray>(KBCATFixedRewardItemArray);
-            var tableBonus = pkNX.Structures.FlatBuffers.FlatBufferConverter.DeserializeFrom<DeliveryRaidLotteryRewardItemArray>(KBCATLotteryRewardItemArray);
+            var tableDrops = pkNX.Structures.FlatBuffers.FlatBufferConverter.DeserializeFrom<DeliveryRaidFixedRewardItemArray>(KBCATFixedRewardItemArray.ToArray());
+            var tableBonus = pkNX.Structures.FlatBuffers.FlatBufferConverter.DeserializeFrom<DeliveryRaidLotteryRewardItemArray>(KBCATLotteryRewardItemArray.ToArray());
             var opt = new JsonSerializerOptions { WriteIndented = true };
             var drops = JsonSerializer.Serialize(tableDrops, opt);
             var lottery = JsonSerializer.Serialize(tableBonus, opt);
@@ -56,7 +55,7 @@ public static class EventUtil
         var type3list = new List<byte[]>();
 
         var KBCATRaidEnemyArray = sav.Accessor.FindOrDefault(BlockDefinitions.KBCATRaidEnemyArray.Key).Data;
-        var tableEncounters = pkNX.Structures.FlatBuffers.FlatBufferConverter.DeserializeFrom<DeliveryRaidEnemyTableArray>(KBCATRaidEnemyArray);
+        var tableEncounters = pkNX.Structures.FlatBuffers.FlatBufferConverter.DeserializeFrom<DeliveryRaidEnemyTableArray>(KBCATRaidEnemyArray.ToArray());
 
         var byGroupID = tableEncounters.Table
             .Where(z => z.Info.Rate != 0)
@@ -101,7 +100,7 @@ public static class EventUtil
         var KBCATRaidPriorityArray = sav.Accessor.FindOrDefault(BlockDefinitions.KBCATRaidPriorityArray.Key);
         if (KBCATRaidPriorityArray.Type is not SCTypeCode.None && KBCATRaidPriorityArray.Data.Length > 0)
         {
-            try { return pkNX.Structures.FlatBuffers.FlatBufferConverter.DeserializeFrom<DeliveryRaidPriorityArray>(KBCATRaidPriorityArray.Data).Table.First(); }
+            try { return pkNX.Structures.FlatBuffers.FlatBufferConverter.DeserializeFrom<DeliveryRaidPriorityArray>(KBCATRaidPriorityArray.Data.ToArray()).Table.First(); }
             catch { }
         }
         return null;
@@ -224,21 +223,22 @@ public static class EventUtil
         [3, 4, 5, 6, 7],
     ];
 
-    public static byte GetDeliveryGroupID(IEventRaid9[] encounters, SAV9SV sav, EventProgress progress, RaidSpawnList9 raids, int currRaid)
+    public static byte GetDeliveryGroupID(IEventRaid9[] encounters, SAV9SV sav, GameProgress gprogress, EventProgress eprogress, RaidSpawnList9 raids, int currRaid)
     {
         var possibleGroups = new HashSet<int>();
 
-        foreach (var enc in encounters)
-            if ((sav.Version is PKHeX.Core.GameVersion.SL && enc.GetRandRateTotalScarlet(progress) > 0) ||
-                (sav.Version is PKHeX.Core.GameVersion.VL && enc.GetRandRateTotalViolet(progress) > 0))
-                    possibleGroups.Add(enc.Index);
+        foreach (var enc in encounters) 
+        {
+            if (enc.IsMighty && gprogress < GameProgress.Unlocked6Stars)
+                continue;
+
+            if (enc.CanBeEncounteredFromStage(eprogress, sav.Version)) 
+                possibleGroups.Add(enc.Index);
+        }
 
         var eventCount = GetEventCount(raids, ++currRaid);
-
         var priority = GetEventDeliveryPriority(sav);
-        var groupid = priority is not null ? GetDeliveryGroupID(eventCount, priority.GroupID.Groups, possibleGroups) : (byte)0;
-
-        return groupid;
+        return  priority is not null ? GetDeliveryGroupID(eventCount, priority.GroupID.Groups, possibleGroups) : (byte)0;
     }
 
     private static int GetEventCount(RaidSpawnList9 raids, int selected)

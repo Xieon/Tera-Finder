@@ -147,7 +147,9 @@ public partial class RewardCalcForm : Form
             { "TeraShiny.Star", "Star" },
             { "TeraShiny.Square", "Square" },
             { "RewardCalcForm.btnSaveAllTxt", "Save All Results as TXT" },
+            { "RewardCalcForm.btnSaveAllCsv", "Save All Results as CSV" },
             { "RewardCalcForm.btnSaveSelectedTxt", "Save Selected Results as TXT" },
+            { "RewardCalcForm.btnSaveSelectedCsv", "Save Selected Results as CSV" },
             { "RewardCalcForm.btnSendSelectedRaid", "Send Selected Result to Raid Editor" },
             { "RewardCalcForm.btnCopySeed", "Copy Seed" },
             { "Plugin.MapPaldea", "Paldea" },
@@ -198,7 +200,9 @@ public partial class RewardCalcForm : Form
     private void TranslateContextMenu()
     {
         btnSaveAllTxt.Text = Strings["RewardCalcForm.btnSaveAllTxt"];
+        btnSaveAllCsv.Text = Strings["RewardCalcForm.btnSaveAllCsv"];
         btnSaveSelectedTxt.Text = Strings["RewardCalcForm.btnSaveSelectedTxt"];
+        btnSaveSelectedCsv.Text = Strings["RewardCalcForm.btnSaveSelectedCsv"];
         btnSendSelectedRaid.Text = Strings["RewardCalcForm.btnSendSelectedRaid"];
         btnCopySeed.Text = Strings["RewardCalcForm.btnCopySeed"];
     }
@@ -348,20 +352,20 @@ public partial class RewardCalcForm : Form
     {
         RaidContent.Standard => (TeraRaidMapParent)cmbMap.SelectedIndex switch
         {
-            TeraRaidMapParent.Paldea => Editor.Paldea,
-            TeraRaidMapParent.Kitakami => Editor.Kitakami,
-            TeraRaidMapParent.Blueberry => Editor.Blueberry,
+            TeraRaidMapParent.Paldea => Editor.RaidEncounters.Paldea,
+            TeraRaidMapParent.Kitakami => Editor.RaidEncounters.Kitakami,
+            TeraRaidMapParent.Blueberry => Editor.RaidEncounters.Blueberry,
             _ => throw new NotImplementedException(nameof(cmbMap.SelectedIndex)),
         },
         RaidContent.Black => (TeraRaidMapParent)cmbMap.SelectedIndex switch
         {
-            TeraRaidMapParent.Paldea => Editor.PaldeaBlack,
-            TeraRaidMapParent.Kitakami => Editor.KitakamiBlack,
-            TeraRaidMapParent.Blueberry => Editor.BlueberryBlack,
+            TeraRaidMapParent.Paldea => Editor.RaidEncounters.PaldeaBlack,
+            TeraRaidMapParent.Kitakami => Editor.RaidEncounters.KitakamiBlack,
+            TeraRaidMapParent.Blueberry => Editor.RaidEncounters.BlueberryBlack,
             _ => throw new NotImplementedException(nameof(cmbMap.SelectedIndex)),
         },
-        RaidContent.Event => Editor.Dist,
-        RaidContent.Event_Mighty => Editor.Mighty,
+        RaidContent.Event => Editor.RaidEncounters.Dist,
+        RaidContent.Event_Mighty => Editor.RaidEncounters.Mighty,
         _ => throw new NotImplementedException(nameof(cmbContent.SelectedIndex)),
     };
 
@@ -697,8 +701,10 @@ public partial class RewardCalcForm : Form
     ];
 
     private void btnSaveAllTxt_Click(object sender, EventArgs e) => dataGrid.SaveAllTxt(Editor.Language);
+    private void btnSaveAllCsv_Click(object sender, EventArgs e) => dataGrid.SaveAllTxt(Editor.Language, saveAsCsv: true);
 
     private void btnSaveSelectedTxt_Click(object sender, EventArgs e) => dataGrid.SaveSelectedTxt(Editor.Language);
+    private void btnSaveSelectedCsv_Click(object sender, EventArgs e) => dataGrid.SaveSelectedTxt(Editor.Language, saveAsCsv: true);
 
     private void btnSendSelectedRaid_Click(object sender, EventArgs e) => dataGrid.SendSelectedRaidEditor(this, Editor.Language);
 
