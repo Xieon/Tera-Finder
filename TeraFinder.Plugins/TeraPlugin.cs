@@ -9,7 +9,7 @@ namespace TeraFinder.Plugins;
 
 public class TeraPlugin : ITFPlugin
 {
-    public string Version { get; init; } = "4.3.3";
+    public string Version { get; init; } = "4.3.7";
     private bool UpdatePrompted = false;
 
     public string Name => nameof(TeraFinder);
@@ -422,7 +422,7 @@ public class TeraPlugin : ITFPlugin
 
         try
         {
-            File.WriteAllBytes(path, sav.Write(flags));
+            File.WriteAllBytes(path, sav.Write(flags).Span);
             sav.State.Edited = false;
             sav.Metadata.SetExtraInfo(path);
             Alert("SAV exported to:", path);

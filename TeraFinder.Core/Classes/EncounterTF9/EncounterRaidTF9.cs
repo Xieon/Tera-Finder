@@ -52,7 +52,15 @@ public abstract record EncounterRaidTF9 : IExtendedTeraRaid9
     public string LongName => Name;
     public string Name => $"{(IsMighty ? "Mighty " : "")}{(Species)Species}-{Form}";
 
-    public bool CanBeCaught => Identifier != 2025072301u; //Shiny Wo-Chien
+    public bool IsCatchable => !NonCatchable.Contains(Identifier);
+    private static readonly uint[] NonCatchable = 
+    [
+        2025072301u, // Shiny Wo-Chien
+        2025080401u, // Shiny Chien-Pao
+        2025081801u, // Shiny Ting-Lu
+        2025090101u, // Shiny Chi-Yu
+
+    ];
 
     public abstract bool CanBeEncountered(uint seed);
 
@@ -262,7 +270,7 @@ public abstract record EncounterRaidTF9 : IExtendedTeraRaid9
     public PK9 ConvertToPKM(ITrainerInfo tr) => ConvertToPKM(tr, EncounterCriteria.Unrestricted);
     public PK9 ConvertToPKM(ITrainerInfo tr, EncounterCriteria criteria)
     {
-        int language = (int)Language.GetSafeLanguage(Generation, (LanguageID)tr.Language);
+        int language = (int)Language.GetSafeLanguage789((LanguageID)tr.Language);
         var version = this.GetCompatibleVersion(tr.Version);
         var pi = GetPersonal();
         var pk = new PK9
